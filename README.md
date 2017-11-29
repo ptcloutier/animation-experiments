@@ -7,6 +7,6 @@ A little fun with Sprites and some additive color blending.
 width='350'/>
 </p>
 <p align="right">
-   <img src="https://media.giphy.com/media/3o6nUYAOF1Z2PSflWo/source.mp4"
+   <img src="https://user-images.githubusercontent.com/15159970/33396540-d0c59234-d516-11e7-98a0-277b99485c8b.gif"
 width='350'/>
    </p>
