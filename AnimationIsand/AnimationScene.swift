@@ -59,7 +59,7 @@ class AnimationScene: SKScene {
         bubble.glowWidth = bubble.frame.size.width/2
         animationBackground.addChild(bubble)
 //         let startingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*size.height)
-        let startingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*size.height/2)
+        let startingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*(CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
         
         
  
@@ -77,8 +77,8 @@ class AnimationScene: SKScene {
 //            case false:
 //                shrink(bubble: bubble)
 //            }
-            bubble.glowWidth += 0.9
-            bubble.alpha -= 0.1// 0.5 is awesome 
+            bubble.glowWidth += 0.1
+            bubble.alpha -= 0.05// 0.5 is awesome
             
             let xOffset: CGFloat = CGFloat(arc4random_uniform(30)) - 10.0
             let yOffset: CGFloat = 40.0
