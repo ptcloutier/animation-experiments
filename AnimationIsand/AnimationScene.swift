@@ -13,7 +13,6 @@ class AnimationScene: SKScene {
     
     var animationBackground: SKSpriteNode!
     var colors = [UIColor]()
-    var bubbleShouldGrow: Bool = false
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
