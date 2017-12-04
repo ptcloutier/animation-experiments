@@ -112,12 +112,9 @@ class AnimationScene: SKScene {
     
     func floatBubbles() {
         for child in animationBackground.children {
-            
             let bubble = child as! SKShapeNode
-            
             bubble.glowWidth += 0.1 //CGFloat(arc4random_uniform(UInt32(1.0)))  //0.1
             bubble.alpha -= 0.005   //0.05 and 0.5 are awesome
-            
             let xOffset: CGFloat = CGFloat(arc4random_uniform(30)) - 10.0
             let yOffset: CGFloat = 10.0
             let newLocation = CGPoint(x: child.position.x + xOffset/2, y: child.position.y + yOffset)
