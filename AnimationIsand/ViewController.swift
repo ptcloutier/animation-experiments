@@ -22,4 +22,3 @@ class ViewController: UIViewController {
         skView.presentScene(scene)
     }
 }
-
