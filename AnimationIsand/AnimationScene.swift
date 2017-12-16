@@ -49,7 +49,6 @@ class AnimationScene: SKScene {
         if gestureRecognizer.state == .began || gestureRecognizer.state == .changed || gestureRecognizer.state == .ended {
             let location =  gestureRecognizer.location(in: self.view)
             tapAddBubble(atLocation: location)
-
         }
     }
 
