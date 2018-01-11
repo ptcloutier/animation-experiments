@@ -13,14 +13,54 @@ class AnimationScene: SKScene {
     
     var animationBackground: SKSpriteNode!
     var colors = [UIColor]()
+    var count: Int = 0
+    var nodes: [SKShapeNode] = []
+    let shapeNodeWidth: CGFloat = 25.0
+    let timeInterval: TimeInterval = 0.5
+    let maxCount = 480
+    var pool: [SKShapeNode] = []
+    var container: SKView?
+    var shapeSize: CGSize = CGSize()
+    var atLocation: CGPoint = CGPoint()
+
     
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     override init(size: CGSize) {
         super.init(size: size)
+        
+        // set shape size
+        shapeSize = CGSize.init(width: CGFloat(shapeNodeWidth)/2.0, height: CGFloat(shapeNodeWidth))
+       
+        // set shape origin point
+        atLocation = topCenterStartingPoint()
+
+        // import color palette for shapes
+        setupColors()
+        
+        animationBackground = SKSpriteNode(color: UIColor.clear, size: size)
         anchorPoint = CGPoint(x: 0, y: 1.0)
+        animationBackground.anchorPoint = anchorPoint
+        animationBackground.position = CGPoint(x: 0, y: 0)
+        self.addChild(animationBackground)
+        
+        // populate nodes to reuse
+        createPool()
+        
+        // create bottom edge
+        self.scaleMode = .aspectFit
+        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
+        
+        Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(AnimationScene.addShape), userInfo: nil, repeats: true)
+        
+    }
+    
+    
+    
+    func setupColors(){
         colors.append(UIColor.red)
         colors.append(UIColor.green)
         colors.append(UIColor.blue)
@@ -35,101 +75,127 @@ class AnimationScene: SKScene {
         for x in psyColors {
             colors.append(x)
         }
-        animationBackground = SKSpriteNode(color: UIColor.clear, size: size)
-        animationBackground.anchorPoint = CGPoint(x: 0, y: 1.0)
-        animationBackground.position = CGPoint(x: 0, y: 0)
-        self.addChild(animationBackground)
-        
-        
-        
     }
     
     
-    @objc func handleParameterGesture(gestureRecognizer: UIGestureRecognizer){
-        if gestureRecognizer.state == .began || gestureRecognizer.state == .changed || gestureRecognizer.state == .ended {
-            let location =  gestureRecognizer.location(in: self.view)
-            tapAddBubble(atLocation: location)
-        }
+    
+    func randomStartingPoint() -> CGPoint{
+        
+        let randomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
+        return randomStartingPoint
     }
+    
+    
+    
+    func topCenterStartingPoint() -> CGPoint {
+        let topCenterStartingPoint = CGPoint(x: (UIScreen.main.bounds.midX+CGFloat(arc4random_uniform(2))), y: 1)
+        return topCenterStartingPoint
+    }
+    
 
-    override func didMove(to view: SKView) {
-        let pan = UIPanGestureRecognizer.init(target: self, action: #selector(AnimationScene.handleParameterGesture))
-        view.addGestureRecognizer(pan)
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(AnimationScene.handleParameterGesture))
-        view.addGestureRecognizer(tap)
-//        let singleTap = UITapGestureRecognizer(target:self, action: #selector(AnimationScene.handleSingleTap))
-//        singleTap.numberOfTouchesRequired = 1
-//        view.isUserInteractionEnabled = true
-//        view.addGestureRecognizer(singleTap)
-    }
     
     
-    
-    //event handler
-    @objc func handleSingleTap(sender:UITapGestureRecognizer){
-        let location = sender.location(in: self.view)
-        print("location x: \(location.x), y: \(location.y)")
-        tapAddBubble(atLocation: location)
-    }
-    
-    override func update(_ currentTime: CFTimeInterval) {
-        let randomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*(CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
-        addBubble(atLocation: randomStartingPoint)
-        floatBubbles()
-        removeExcessBubbles()
-    }
-    
-    func addBubble(atLocation: CGPoint) {
-        let bubble = SKShapeNode(circleOfRadius: CGFloat(arc4random_uniform(1)))
-        bubble.fillColor = UIColor.init(red: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, green: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, blue: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, alpha: 1.0)
-        bubble.blendMode = .add
-        bubble.strokeColor = bubble.fillColor
-        bubble.alpha = 1.0
-        bubble.glowWidth = bubble.frame.size.width
-        animationBackground.addChild(bubble)
-//         let bottomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*size.height)
-//        let randomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*(CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
+    @objc func addShape(){
         
-      
-        bubble.position = atLocation //CGPoint(x: x, y: y)
-    }
-    
-    func tapAddBubble(atLocation: CGPoint){
         
-        let bubble = SKShapeNode(circleOfRadius: CGFloat(arc4random_uniform(10)))
-        bubble.fillColor = UIColor.init(red: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, green: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, blue: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, alpha: 1.0)
-        bubble.blendMode = .add
-        bubble.strokeColor = bubble.fillColor
-        bubble.alpha = 1.0
-        bubble.glowWidth = bubble.frame.size.width
-        animationBackground.addChild(bubble)
-        let x = atLocation.x
-        let y = (-1)*atLocation.y
-        bubble.position = CGPoint(x: x, y: y)
-    }
-    
-    
-    func floatBubbles() {
-        for child in animationBackground.children {
-            let bubble = child as! SKShapeNode
-            bubble.glowWidth += 0.1 //CGFloat(arc4random_uniform(UInt32(1.0)))  //0.1
-            bubble.alpha -= 0.005   //0.05 and 0.5 are awesome
-            let xOffset: CGFloat = CGFloat(arc4random_uniform(30)) - 10.0
-            let yOffset: CGFloat = 10.0
-            let newLocation = CGPoint(x: child.position.x + xOffset/2, y: child.position.y + yOffset)
-            let moveAction = SKAction.move(to: newLocation, duration: 0.2)
-            child.run(moveAction)
-        }
-    }
-    
-    
-    
-    func removeExcessBubbles() {
-        
-        for child in animationBackground.children {
-            if child.position.y > 0 {
-                child.removeFromParent()
+        if count >= maxCount {
+            
+            for n in nodes {
+                n.glowWidth = 1.0
+                n.physicsBody?.affectedByGravity = false
             }
+            print("done!")
+            return
+        }
+         else {
+//            cacheShapes()
+            addShapeNodeToScene()
+        
         }
     }
+    
+    
+    
+    
+
+    func createPool(){
+    
+        var node: SKShapeNode
+       
+        while pool.count <= 50 {
+            node = createNodeForPool()
+            pool.append(node)
+        }
+        
+    }
+    
+    
+    func createNodeForPool() -> SKShapeNode {
+        let node = SKShapeNode(circleOfRadius: shapeSize.width)
+        return node
+    }
+   
+    
+    
+    
+    func getShapeNode() -> SKShapeNode {
+        
+        if pool.count == 0 {
+            cacheShapes()
+        }
+        let shapeNode: SKShapeNode = pool[0]
+        pool.remove(at: 0)
+        
+        print("pool remove - count \(pool.count)")
+        return shapeNode
+    }
+    
+    
+    
+    func addShapeNodeToScene(){
+        
+        let shape = getShapeNode()
+        shape.fillColor = UIColor.init(red: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, green: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, blue: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, alpha: 1.0)
+        shape.blendMode = .add
+        shape.strokeColor = shape.fillColor
+        shape.alpha = 1.0
+        shape.glowWidth = 0.3
+        // apply physics
+        
+        shape.physicsBody = SKPhysicsBody(rectangleOf: shapeSize)
+        shape.physicsBody?.affectedByGravity = true
+        shape.physicsBody?.linearDamping = 5.0
+        shape.physicsBody?.usesPreciseCollisionDetection = false
+        animationBackground.addChild(shape)
+        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
+        let y = (-1)*atLocation.y
+        shape.position = CGPoint(x: x, y: y)
+    }
+    
+    
+    
+    func cacheShapes(){
+   
+       
+        let cacheTexture: SKTexture = SKView().texture(from: self, crop: UIScreen.main.bounds)!
+        animationBackground.texture = cacheTexture
+        
+
+        for child in animationBackground.children {
+            let n = child as! SKShapeNode
+            n.removeFromParent()
+            self.pool.append(n)
+             print("pool append - count \(self.pool.count)")
+            let location = n.getLocation()
+            print("node location - \(location.x), \(location.y)")
+        }
+    }
+    
+    
+    func adjustBottomEdge(){
+        
+    }
+    
+    
+    
 }

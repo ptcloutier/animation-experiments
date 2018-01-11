@@ -15,10 +15,12 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
         size = self.view.frame.size
         scene = AnimationScene(size: size)
         
         let skView = self.view as! SKView
+        scene.container = skView
         skView.presentScene(scene)
     }
 }
