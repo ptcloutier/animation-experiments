@@ -81,7 +81,7 @@ class AnimationScene: SKScene {
         Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(AnimationScene.addShape), userInfo: nil, repeats: true)
         
         // set raiseApexY
-        raiseApexY = 40.0
+        raiseApexY = 100.0
         apexY = groundPointB.y
         
     }
@@ -234,8 +234,8 @@ class AnimationScene: SKScene {
         
         let apexPoint = CGPoint(x: UIScreen.main.bounds.maxX/2.0, y: groundPointB.y + raiseApexY)
         
-        let cacheTexture: SKTexture = SKView().texture(from: self, crop: UIScreen.main.bounds)!
-        animationBackground.texture = cacheTexture
+//        let cacheTexture: SKTexture = SKView().texture(from: self, crop: UIScreen.main.bounds)!
+//        animationBackground.texture = cacheTexture
         for child in animationBackground.children {
             let n = child as! SKShapeNode
             if n.name == "shape" {
