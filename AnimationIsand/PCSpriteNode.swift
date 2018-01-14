@@ -9,25 +9,25 @@
 import UIKit
 import SpriteKit
 
-class PCShapeNode: SKShapeNode {
+class PCSpriteNode: SKSpriteNode {
 
     var id: Int = Int()
     
     
  
-    func startTimerToEraseBitmasks(){
+    func startTimerToClearBitmasks(){
         
-         Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(PCShapeNode.setBitmasksToZero), userInfo: nil, repeats: false)
+         Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(PCSpriteNode.setBitmasksToZero), userInfo: nil, repeats: false)
     }
     
     @objc func setBitmasksToZero(){
-        if self.name == "shape" {
+        if self.name == "sprite" {
         self.physicsBody?.collisionBitMask = 0
         self.physicsBody?.fieldBitMask = 0
-//        self.physicsBody?.categoryBitMask = 0
-        self.physicsBody?.affectedByGravity = false
         self.physicsBody?.contactTestBitMask = 0
-        print("bitmasks set to zero for shapenode - \(self.id)")
+//        self.physicsBody?.affectedByGravity = false
+        self.physicsBody?.contactTestBitMask = 0
+        print("sprite bitmasks set to zero - \(self.id)")
         } else {
             print("ground node")
         }

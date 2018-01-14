@@ -20,7 +20,7 @@ class ViewController: UIViewController {
         scene = AnimationScene(size: size)
         
         let skView = self.view as! SKView
-//        skView.ignoresSiblingOrder = true
+        skView.ignoresSiblingOrder = true
         scene.container = skView
         skView.presentScene(scene)
     }

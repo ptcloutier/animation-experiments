@@ -14,11 +14,11 @@ class AnimationScene: SKScene {
     var animationBackground: SKSpriteNode!
     var colors = [UIColor]()
     var count: Int = 0
-    var nodes: [PCShapeNode] = []
-    let shapeNodeWidth: CGFloat = 30.0
-    let timeInterval: TimeInterval = 0.5
-    let maxCount = 5000
-    var pool: [PCShapeNode] = []
+    var nodes: [SKShapeNode] = []
+    let shapeNodeWidth: CGFloat = 10.0
+    let timeInterval: TimeInterval = 0.001
+    let maxCount = 1000
+    var pool: [SKShapeNode] = []
     var shapeSize: CGSize = CGSize()
     var atLocation: CGPoint = CGPoint()
     var splinePoints: [CGPoint] = []
@@ -34,8 +34,25 @@ class AnimationScene: SKScene {
     var poolCount: Int = 150
     var raiseApexY: CGFloat = CGFloat()
     var raiseYDrop: CGFloat = CGFloat()
-    var ground = PCShapeNode()
-    
+    var ground = SKShapeNode()
+    var timer: Timer = Timer()
+    lazy var circle: SKSpriteNode =
+        {
+            let target = SKShapeNode(circleOfRadius: 1000)
+            target.blendMode = .add
+            target.alpha = 1.0
+            target.glowWidth = 0.3
+            target.fillColor = randomColor()
+            
+            let texture = SKView().texture(from:target)
+            let spr = SKSpriteNode(texture:texture)
+            spr.physicsBody = SKPhysicsBody(circleOfRadius: 1000)
+            spr.physicsBody?.affectedByGravity = false
+            spr.physicsBody?.linearDamping = 5.0
+            spr.physicsBody?.angularDamping = 5.0
+            spr.physicsBody?.usesPreciseCollisionDetection = false
+            return spr
+    }()
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -71,13 +88,13 @@ class AnimationScene: SKScene {
         groundPoints = [groundPointA, groundPointB, groundPointC]
         
         
-        setupGround(points: groundPoints)
+//        setupGround(points: groundPoints)
 
         self.scaleMode = .aspectFit
         self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
         
         // start drop shapes
-        Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(AnimationScene.addShape), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(AnimationScene.addShape), userInfo: nil, repeats: true)
         
         // set raiseApexY
         raiseApexY = 100.0
@@ -90,7 +107,7 @@ class AnimationScene: SKScene {
         
         splinePoints = points
         ground.removeFromParent()
-        ground = PCShapeNode(splinePoints: &splinePoints,
+        ground = SKShapeNode(splinePoints: &splinePoints,
                                  count: splinePoints.count)
         ground.name = "ground"
         ground.strokeColor = UIColor.clear
@@ -143,48 +160,86 @@ class AnimationScene: SKScene {
         
         if count >= maxCount {
             
-            for n in nodes {
-                n.glowWidth = 1.0
-                n.physicsBody?.affectedByGravity = false
-            }
-            print("done!")
-            return
+            timer.invalidate()
+//            for n in nodes {
+//                n.glowWidth = 1.0
+//            }
+//            print("done!")
         }
          else {
-            addShapeNodeToScene()
-        
+            addCircle()
+//            addShapeNodeToScene()
+            print("scene children count - \(animationBackground.children.count), count - \(count)")
+            count += 1
         }
     }
     
     
     
-    
+    func randomColor() -> UIColor{
+       let color =  UIColor.init(red: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, green: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, blue: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, alpha: 1.0)
+        return color
+    }
     
     
     
     
     func addShapeNodeToScene(){
         
-        let shape = PCShapeNode(circleOfRadius: shapeSize.width)
-        shape.startTimerToEraseBitmasks()
-        shape.name = "shape"
-        shape.fillColor = UIColor.init(red: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, green: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, blue: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, alpha: 1.0)
+        let shape = SKShapeNode(circleOfRadius: shapeSize.width)
+        shape.fillColor = randomColor()
         shape.blendMode = .add
         shape.strokeColor = shape.fillColor
         shape.alpha = 1.0
         shape.glowWidth = 0.3
-        // apply physics
         
-        shape.physicsBody = SKPhysicsBody(circleOfRadius: shapeSize.width)
-        shape.physicsBody?.affectedByGravity = true
-        shape.physicsBody?.linearDamping = 5.0
-        shape.physicsBody?.angularDamping = 5.0
-        shape.physicsBody?.usesPreciseCollisionDetection = false
-        animationBackground.addChild(shape)
+        // create sprite w/ skshapenode attributes
+        let texture = SKView().texture(from: shape)
+        let sprite = PCSpriteNode.init(texture: texture)
+        sprite.name = "sprite"
+        sprite.startTimerToClearBitmasks()
+
+        // apply physics
+        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeSize.width)
+        sprite.physicsBody?.affectedByGravity = false
+        sprite.physicsBody?.linearDamping = 5.0
+        sprite.physicsBody?.angularDamping = 5.0
+        sprite.physicsBody?.usesPreciseCollisionDetection = false
+        animationBackground.addChild(sprite)
+        
+        // start location
         let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
-        let y = (-1)*atLocation.y
+        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
         let location = CGPoint(x: x, y: y)
-        shape.position = location
+        sprite.position = location
+    }
+    
+    
+    
+    func createCircle(of radius: CGFloat, color: UIColor) -> SKSpriteNode
+    {
+        let spr = circle.copy() as! SKSpriteNode
+        let scale = radius/800.0
+        spr.xScale = scale
+        spr.yScale = scale
+        spr.color = color
+        spr.colorBlendFactor = 0.5
+        spr.blendMode = .add
+        spr.zPosition = CGFloat(arc4random_uniform(UInt32(5.0)))
+    
+        return spr
+        
+    }
+    
+    func addCircle() {
+        
+        let color = randomColor()
+        let spr = createCircle(of: 10.0,color: color)
+        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
+        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
+        let location = CGPoint(x: x, y: y)
+        spr.position = location
+        addChild(spr)
     }
     
     
