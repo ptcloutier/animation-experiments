@@ -110,5 +110,9 @@ class Colors {
         
         return psyUIColors
     }
+    class func randomColor() -> UIColor{
+        let color =  UIColor.init(red: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, green: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, blue: CGFloat(arc4random_uniform(UInt32(255.0)))/255.0, alpha: 1.0)
+        return color
+    }
     
 }

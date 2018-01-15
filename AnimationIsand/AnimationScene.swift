@@ -16,8 +16,8 @@ class AnimationScene: SKScene {
     var count: Int = 0
     var nodes: [SKShapeNode] = []
     let shapeNodeWidth: CGFloat = 10.0
-    let timeInterval: TimeInterval = 0.001
-    let maxCount = 1000
+    let timeInterval: TimeInterval = 0.1
+    let maxCount = 100000
     var pool: [SKShapeNode] = []
     var shapeSize: CGSize = CGSize()
     var atLocation: CGPoint = CGPoint()
@@ -46,11 +46,11 @@ class AnimationScene: SKScene {
             
             let texture = SKView().texture(from:target)
             let spr = SKSpriteNode(texture:texture)
-            spr.physicsBody = SKPhysicsBody(circleOfRadius: 1000)
-            spr.physicsBody?.affectedByGravity = false
-            spr.physicsBody?.linearDamping = 5.0
-            spr.physicsBody?.angularDamping = 5.0
-            spr.physicsBody?.usesPreciseCollisionDetection = false
+//            spr.physicsBody = SKPhysicsBody(circleOfRadius: 1000)
+//            spr.physicsBody?.affectedByGravity = false
+//            spr.physicsBody?.linearDamping = 5.0
+//            spr.physicsBody?.angularDamping = 5.0
+//            spr.physicsBody?.usesPreciseCollisionDetection = false
             return spr
     }()
     
@@ -90,8 +90,8 @@ class AnimationScene: SKScene {
         
 //        setupGround(points: groundPoints)
 
-        self.scaleMode = .aspectFit
-        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
+//        self.scaleMode = .aspectFit
+//        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
         
         // start drop shapes
         timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(AnimationScene.addShape), userInfo: nil, repeats: true)
@@ -103,21 +103,21 @@ class AnimationScene: SKScene {
     }
     
     
-    func setupGround(points: [CGPoint]){
-        
-        splinePoints = points
-        ground.removeFromParent()
-        ground = SKShapeNode(splinePoints: &splinePoints,
-                                 count: splinePoints.count)
-        ground.name = "ground"
-        ground.strokeColor = UIColor.clear
-        
-        ground.lineWidth = 5
-        ground.physicsBody = SKPhysicsBody(edgeChainFrom: ground.path!)
-        ground.physicsBody?.isDynamic = false
-        animationBackground.addChild(ground)
-
-    }
+//    func setupGround(points: [CGPoint]){
+//
+//        splinePoints = points
+//        ground.removeFromParent()
+//        ground = SKShapeNode(splinePoints: &splinePoints,
+//                                 count: splinePoints.count)
+//        ground.name = "ground"
+//        ground.strokeColor = UIColor.clear
+//
+//        ground.lineWidth = 5
+//        ground.physicsBody = SKPhysicsBody(edgeChainFrom: ground.path!)
+//        ground.physicsBody?.isDynamic = false
+//        animationBackground.addChild(ground)
+//
+//    }
     
     
     func setupColors(){
@@ -141,7 +141,7 @@ class AnimationScene: SKScene {
     
     func randomStartingPoint() -> CGPoint{
         
-        let randomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
+        let randomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*(CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
         return randomStartingPoint
     }
     
@@ -184,36 +184,36 @@ class AnimationScene: SKScene {
     
     
     
-    func addShapeNodeToScene(){
-        
-        let shape = SKShapeNode(circleOfRadius: shapeSize.width)
-        shape.fillColor = randomColor()
-        shape.blendMode = .add
-        shape.strokeColor = shape.fillColor
-        shape.alpha = 1.0
-        shape.glowWidth = 0.3
-        
-        // create sprite w/ skshapenode attributes
-        let texture = SKView().texture(from: shape)
-        let sprite = PCSpriteNode.init(texture: texture)
-        sprite.name = "sprite"
-        sprite.startTimerToClearBitmasks()
-
-        // apply physics
-        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeSize.width)
-        sprite.physicsBody?.affectedByGravity = false
-        sprite.physicsBody?.linearDamping = 5.0
-        sprite.physicsBody?.angularDamping = 5.0
-        sprite.physicsBody?.usesPreciseCollisionDetection = false
-        animationBackground.addChild(sprite)
-        
-        // start location
-        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
-        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
-        let location = CGPoint(x: x, y: y)
-        sprite.position = location
-    }
-    
+//    func addShapeNodeToScene(){
+//
+//        let shape = SKShapeNode(circleOfRadius: shapeSize.width)
+//        shape.fillColor = randomColor()
+//        shape.blendMode = .add
+//        shape.strokeColor = shape.fillColor
+//        shape.alpha = 1.0
+//        shape.glowWidth = 0.3
+//
+//        // create sprite w/ skshapenode attributes
+//        let texture = SKView().texture(from: shape)
+//        let sprite = PCSpriteNode.init(texture: texture)
+//        sprite.name = "sprite"
+//        sprite.startTimerToClearBitmasks()
+//
+//        // apply physics
+//        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeSize.width)
+//        sprite.physicsBody?.affectedByGravity = false
+//        sprite.physicsBody?.linearDamping = 5.0
+//        sprite.physicsBody?.angularDamping = 5.0
+//        sprite.physicsBody?.usesPreciseCollisionDetection = false
+//        animationBackground.addChild(sprite)
+//
+//        // start location
+//        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
+//        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
+//        let location = CGPoint(x: x, y: y)
+//        sprite.position = location
+//    }
+//
     
     
     func createCircle(of radius: CGFloat, color: UIColor) -> SKSpriteNode
@@ -235,10 +235,10 @@ class AnimationScene: SKScene {
         
         let color = randomColor()
         let spr = createCircle(of: 10.0,color: color)
-        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
-        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
-        let location = CGPoint(x: x, y: y)
-        spr.position = location
+//        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
+//        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
+//        let location = CGPoint(x: x, y: y)
+        spr.position = randomStartingPoint()
         addChild(spr)
     }
     
