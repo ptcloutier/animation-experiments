@@ -15,7 +15,7 @@ class AnimationScene: SKScene {
     var colors = [UIColor]()
     var count: Int = 0
     var nodes: [SKShapeNode] = []
-    let shapeNodeWidth: CGFloat = 10.0
+    let shapeNodeWidth: CGFloat = 5.0
     let timeInterval: TimeInterval = 0.1
     let maxCount = 100000
     var pool: [SKShapeNode] = []
@@ -46,11 +46,11 @@ class AnimationScene: SKScene {
             
             let texture = SKView().texture(from:target)
             let spr = SKSpriteNode(texture:texture)
-//            spr.physicsBody = SKPhysicsBody(circleOfRadius: 1000)
-//            spr.physicsBody?.affectedByGravity = false
-//            spr.physicsBody?.linearDamping = 5.0
-//            spr.physicsBody?.angularDamping = 5.0
-//            spr.physicsBody?.usesPreciseCollisionDetection = false
+            spr.physicsBody = SKPhysicsBody(circleOfRadius: 1000)
+            spr.physicsBody?.affectedByGravity = true
+            spr.physicsBody?.linearDamping = 5.0
+            spr.physicsBody?.angularDamping = 5.0
+            spr.physicsBody?.usesPreciseCollisionDetection = false
             return spr
     }()
     
@@ -90,8 +90,8 @@ class AnimationScene: SKScene {
         
 //        setupGround(points: groundPoints)
 
-//        self.scaleMode = .aspectFit
-//        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
+        self.scaleMode = .aspectFit
+        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
         
         // start drop shapes
         timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(AnimationScene.addShape), userInfo: nil, repeats: true)
@@ -103,6 +103,36 @@ class AnimationScene: SKScene {
     }
     
     
+    func createCircle(of radius: CGFloat, color: UIColor) -> SKSpriteNode
+    {
+        let spr = circle.copy() as! SKSpriteNode
+        let scale = radius/1200
+        spr.xScale = scale
+        spr.yScale = scale
+        spr.color = color
+        spr.colorBlendFactor = 0.3
+        spr.blendMode = .add
+        spr.zPosition = CGFloat(arc4random_uniform(UInt32(5.0)))
+        
+        return spr
+        
+    }
+    
+    func addCircle() {
+        
+        let color = randomColor()
+        let spr = createCircle(of: 3.0, color: color)
+        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
+        let y = (-1)*atLocation.y // (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0)))
+        let location = CGPoint(x: x, y: y)
+        spr.position = location
+        addChild(spr)
+    }
+    
+    
+    
+    
+
 //    func setupGround(points: [CGPoint]){
 //
 //        splinePoints = points
@@ -161,14 +191,10 @@ class AnimationScene: SKScene {
         if count >= maxCount {
             
             timer.invalidate()
-//            for n in nodes {
-//                n.glowWidth = 1.0
-//            }
-//            print("done!")
+
         }
          else {
             addCircle()
-//            addShapeNodeToScene()
             print("scene children count - \(animationBackground.children.count), count - \(count)")
             count += 1
         }
@@ -214,36 +240,6 @@ class AnimationScene: SKScene {
 //        sprite.position = location
 //    }
 //
-    
-    
-    func createCircle(of radius: CGFloat, color: UIColor) -> SKSpriteNode
-    {
-        let spr = circle.copy() as! SKSpriteNode
-        let scale = radius/800.0
-        spr.xScale = scale
-        spr.yScale = scale
-        spr.color = color
-        spr.colorBlendFactor = 0.5
-        spr.blendMode = .add
-        spr.zPosition = CGFloat(arc4random_uniform(UInt32(5.0)))
-    
-        return spr
-        
-    }
-    
-    func addCircle() {
-        
-        let color = randomColor()
-        let spr = createCircle(of: 10.0,color: color)
-//        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
-//        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
-//        let location = CGPoint(x: x, y: y)
-        spr.position = randomStartingPoint()
-        addChild(spr)
-    }
-    
-    
-    
     
     
   
