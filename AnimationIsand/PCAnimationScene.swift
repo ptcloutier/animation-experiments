@@ -17,7 +17,7 @@ class PCAnimationScene: SKScene {
     var count: Int = 1
     var nodes: [SKShapeNode] = []
     let shapeNodeWidth: CGFloat = 5.0
-    let timeInterval: TimeInterval = 0.1
+    let timeInterval: TimeInterval = 0
     let maxCount = 100000
     var pool: [SKShapeNode] = []
     var shapeSize: CGSize = CGSize()
@@ -39,25 +39,7 @@ class PCAnimationScene: SKScene {
     var timer: Timer = Timer()
     var sprites: [PCSpriteNode] = []
 
-    lazy var circle: PCSpriteNode =
-        {
-            let target = SKShapeNode(circleOfRadius: 1000)
-            target.blendMode = .add
-            target.alpha = 1.0
-            target.glowWidth = 0.3
-            target.fillColor = randomColor()
-            
-            let texture = SKView().texture(from:target)
-            let spr = PCSpriteNode(texture:texture)
-            spr.physicsBody = SKPhysicsBody(circleOfRadius: 1000)
-            spr.physicsBody?.affectedByGravity = true
-            spr.physicsBody?.linearDamping = 5.0
-            spr.physicsBody?.angularDamping = 5.0
-            spr.physicsBody?.usesPreciseCollisionDetection = false
-            return spr
-    }()
     
- 
     
     
     
@@ -70,101 +52,17 @@ class PCAnimationScene: SKScene {
     
     override init(size: CGSize) {
         super.init(size: size)
-        
-        // set shape size
-//        shapeSize = CGSize.init(width: CGFloat(shapeNodeWidth)/2.0, height: CGFloat(shapeNodeWidth))
-       
-//        // set shape origin point
-//        atLocation = topCenterStartingPoint()
-//
-//        // import color palette for shapes
-//        setupColors()
-        
-//        animationBackground = SKSpriteNode(color: UIColor.clear, size: size)
-//        anchorPoint = CGPoint(x: 0, y: 1.0)
-//        animationBackground.anchorPoint = anchorPoint
-//        animationBackground.position = CGPoint(x: 0, y: 0)
-//        self.addChild(animationBackground)
-//
-//
-//
-//        // create bottom edge
-//        let bounds = UIScreen.main.bounds
-//
-//        groundPointA = CGPoint(x: 0, y:(-1)*bounds.maxY)
-//        groundPointB = CGPoint(x: bounds.maxX/2.0, y: (-1)*bounds.maxY )
-//        groundPointC = CGPoint(x: bounds.maxX, y: (-1)*bounds.maxY)
-//
-//        groundPoints = [groundPointA, groundPointB, groundPointC]
-//
-        
-//        setupGround(points: groundPoints)
+
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(PCAnimationScene.replaceSprite(notification:)), name: Notification.Name("replaceWithLargerShapeNotification"), object: nil )
 
         self.scaleMode = .aspectFit
         self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
-        
-//        // start drop shapes
-//        timer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(PCAnimationScene.addShape), userInfo: nil, repeats: true)
-//        
-//        // set raiseApexY
-//        raiseApexY = 100.0
-//        apexY = groundPointB.y
-        
+  
     }
     
+     
     
-    
-   
-    func addCircle(id: Int) {
-        
-        let color = randomColor()
-        let spr = createCircle(of: 3.0, color: color)
-        spr.id = id
-        spr.name = "sprite"
-        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
-        let y = (-1)*atLocation.y // (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0)))
-        let location = CGPoint(x: x, y: y)
-        spr.position = location
-        addChild(spr)
-    }
-    
-    
-    
-    
-    func createCircle(of radius: CGFloat, color: UIColor) -> PCSpriteNode {
-        
-        let spr = circle.copy() as! PCSpriteNode
-        let scale = radius/1200
-        spr.xScale = scale
-        spr.yScale = scale
-        spr.color = color
-        spr.colorBlendFactor = 0.3
-        spr.blendMode = .add
-        spr.zPosition = CGFloat(arc4random_uniform(UInt32(5.0)))
-        
-        return spr
-        
-    }
-    
-    
-    
-    
-
-//    func setupGround(points: [CGPoint]){
-//
-//        splinePoints = points
-//        ground.removeFromParent()
-//        ground = SKShapeNode(splinePoints: &splinePoints,
-//                                 count: splinePoints.count)
-//        ground.name = "ground"
-//        ground.strokeColor = UIColor.clear
-//
-//        ground.lineWidth = 5
-//        ground.physicsBody = SKPhysicsBody(edgeChainFrom: ground.path!)
-//        ground.physicsBody?.isDynamic = false
-//        animationBackground.addChild(ground)
-//
-//    }
     
     
     func setupColors(){
@@ -202,27 +100,7 @@ class PCAnimationScene: SKScene {
 
     
     
-    @objc func addShape(){  // until timer is up, then present alert
-        
-        
-        if count % 50 == 0 {
-            let children: [PCSpriteNode] = (animationBackground.children as? [PCSpriteNode])!
-            for ch in children {
-                if ch.id <= 40 && ch.id > 0 {
-                    ch.setBitmasksToZero()
-                    
-                    ch.id = -1
-                    count = 1
-                }
-            }
-            self.scaleMode = .aspectFit
-            self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
-        }
-         else {
-            addCircle(id: count)
-            count += 1
-        }
-    }
+   
     
     
     
@@ -231,85 +109,70 @@ class PCAnimationScene: SKScene {
         return color
     }
     
-    
-    
-    
-//    func addShapeNodeToScene(){
-//
-//        let shape = SKShapeNode(circleOfRadius: shapeSize.width)
-//        shape.fillColor = randomColor()
-//        shape.blendMode = .add
-//        shape.strokeColor = shape.fillColor
-//        shape.alpha = 1.0
-//        shape.glowWidth = 0.3
-//
-//        // create sprite w/ skshapenode attributes
-//        let texture = SKView().texture(from: shape)
-//        let sprite = PCSpriteNode.init(texture: texture)
-//        sprite.name = "sprite"
-//        sprite.startTimerToClearBitmasks()
-//
-//        // apply physics
-//        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeSize.width)
-//        sprite.physicsBody?.affectedByGravity = false
-//        sprite.physicsBody?.linearDamping = 5.0
-//        sprite.physicsBody?.angularDamping = 5.0
-//        sprite.physicsBody?.usesPreciseCollisionDetection = false
-//        animationBackground.addChild(sprite)
-//
-//        // start location
-//        let x = CGFloat(arc4random_uniform(UInt32(20)))+(atLocation.x)
-//        let y = (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0))) // (-1)*atLocation.y
-//        let location = CGPoint(x: x, y: y)
-//        sprite.position = location
-//    }
-//
-    
+ 
     func startAddSpriteTimer(){
         
-        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(PCAnimationScene.addSprite), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PCAnimationScene.addSprite), userInfo: nil, repeats: true)
     }
     
     
     
     @objc func addSprite(){
-        
-        if count % 50 == 0 {
-             for ch in sprites {
-                if ch.id <= 40 && ch.id > 0 {
-                    ch.setBitmasksToZero()
-                    
-                    ch.id = -1
-                    count = 1
-                }
-            }
-            self.scaleMode = .aspectFit
-            self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
-        }
-        else {
-            createSprite(id: count)
-            count += 1
-        }
+  
+        let top = topCenterStartingPoint()
+        createSprite(id: 0, sizeFactor: 0.33, position: top)
+
     }
     
     
-    func createSprite(id: Int) {
+    func createSprite(id: Int, sizeFactor: CGFloat, position: CGPoint) {
         
         let texture = SKTexture.init(imageNamed: "pixel")
         let sprite = PCSpriteNode.init(texture: texture)
+        sprite.startContactTimer()
         sprite.id = id
         sprite.colorBlendFactor = 0.3
         sprite.color = randomColor()
-        sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.size.width)
+        sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.size.width * sizeFactor)
         sprite.physicsBody?.affectedByGravity = true
         sprite.physicsBody?.linearDamping = 10.0
         sprite.physicsBody?.angularDamping = 10.0
         sprite.physicsBody?.usesPreciseCollisionDetection = false
-        sprite.position = topCenterStartingPoint()
+        sprite.position = position
         self.addChild(sprite)
-        sprites.append(sprite)
-    }
+   
+        
+     }
 
     
     
+    @objc func replaceSprite(notification: Notification){
+        guard let location = notification.object as? CGPoint else {
+            print("no location passed with notification")
+            return
+        }
+        replaceSprite(atLocation: location)
+    }
+    
+    func replaceSprite(atLocation: CGPoint){
+        createBigSprite(id: 0, sizeFactor: 10.0, position: atLocation)
+    }
+    
+    func createBigSprite(id: Int, sizeFactor: CGFloat, position: CGPoint) {
+        
+        let size = CGSize(width: 100.0, height: 100.0)
+         let sprite = SKSpriteNode(color: UIColor.purple, size: size)
+//        sprite.startContactTimer()
+        sprite.colorBlendFactor = 0.3
+//        sprite.color = randomColor()
+        sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.size.width * sizeFactor)
+        sprite.physicsBody?.affectedByGravity = true
+        sprite.physicsBody?.linearDamping = 10.0
+        sprite.physicsBody?.angularDamping = 10.0
+        sprite.physicsBody?.usesPreciseCollisionDetection = false
+        sprite.position = position
+        self.addChild(sprite)
+        
+        
+    }
 }
