@@ -72,7 +72,7 @@ class PCAnimationScene: SKScene {
         super.init(size: size)
         
         // set shape size
-        shapeSize = CGSize.init(width: CGFloat(shapeNodeWidth)/2.0, height: CGFloat(shapeNodeWidth))
+//        shapeSize = CGSize.init(width: CGFloat(shapeNodeWidth)/2.0, height: CGFloat(shapeNodeWidth))
        
 //        // set shape origin point
 //        atLocation = topCenterStartingPoint()
@@ -125,7 +125,7 @@ class PCAnimationScene: SKScene {
         let y = (-1)*atLocation.y // (-1)*(CGFloat(UIScreen.main.bounds.height/CGFloat(2.0)))
         let location = CGPoint(x: x, y: y)
         spr.position = location
-        animationBackground.addChild(spr)
+        addChild(spr)
     }
     
     
@@ -195,7 +195,7 @@ class PCAnimationScene: SKScene {
     
     
     func topCenterStartingPoint() -> CGPoint {
-        let topCenterStartingPoint = CGPoint(x: (UIScreen.main.bounds.midX+CGFloat(arc4random_uniform(2))), y: 1)
+        let topCenterStartingPoint = CGPoint(x: (UIScreen.main.bounds.midX+CGFloat(arc4random_uniform(2))), y: UIScreen.main.bounds.size.height)
         return topCenterStartingPoint
     }
     
@@ -265,15 +265,39 @@ class PCAnimationScene: SKScene {
 //    }
 //
     
-    func startTimer(){
+    func startAddSpriteTimer(){
         
         Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(PCAnimationScene.addSprite), userInfo: nil, repeats: true)
     }
     
+    
+    
     @objc func addSprite(){
+        
+        if count % 50 == 0 {
+             for ch in sprites {
+                if ch.id <= 40 && ch.id > 0 {
+                    ch.setBitmasksToZero()
+                    
+                    ch.id = -1
+                    count = 1
+                }
+            }
+            self.scaleMode = .aspectFit
+            self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
+        }
+        else {
+            createSprite(id: count)
+            count += 1
+        }
+    }
+    
+    
+    func createSprite(id: Int) {
         
         let texture = SKTexture.init(imageNamed: "pixel")
         let sprite = PCSpriteNode.init(texture: texture)
+        sprite.id = id
         sprite.colorBlendFactor = 0.3
         sprite.color = randomColor()
         sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.size.width)
@@ -285,4 +309,7 @@ class PCAnimationScene: SKScene {
         self.addChild(sprite)
         sprites.append(sprite)
     }
+
+    
+    
 }

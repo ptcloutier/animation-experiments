@@ -21,15 +21,12 @@ class PCSpriteNode: SKSpriteNode {
     }
     
     @objc func setBitmasksToZero(){
-        if self.name == "sprite" {
-//            self.physicsBody?.collisionBitMask = 0
+//             self.physicsBody?.collisionBitMask = 0
 //            self.physicsBody?.fieldBitMask = 0
             self.physicsBody?.contactTestBitMask = 0
-            self.physicsBody?.categoryBitMask = 0
+//            self.physicsBody?.categoryBitMask = 0
             print("sprite bitmasks set to zero - \(self.id)")
-        } else {
-            print("ground node")
-        }
+        
     }
     
     func getLocation() -> CGPoint {
