@@ -7,27 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A7361A7D1FCF4459002D8426 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7361A7C1FCF4459002D8426 /* Colors.swift */; };
+		A7361A7D1FCF4459002D8426 /* PCColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7361A7C1FCF4459002D8426 /* PCColors.swift */; };
 		A76C13FC2009B317001E5252 /* PCSpriteNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76C13FB2009B317001E5252 /* PCSpriteNode.swift */; };
+		A7707BC8200EECCE00A1D396 /* pixel.png in Resources */ = {isa = PBXBuildFile; fileRef = A7707BC7200EECCE00A1D396 /* pixel.png */; };
 		A7970D771FCE557F00850BC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7970D761FCE557F00850BC0 /* AppDelegate.swift */; };
-		A7970D791FCE557F00850BC0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7970D781FCE557F00850BC0 /* ViewController.swift */; };
+		A7970D791FCE557F00850BC0 /* PCAnimationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7970D781FCE557F00850BC0 /* PCAnimationViewController.swift */; };
 		A7970D7C1FCE557F00850BC0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7970D7A1FCE557F00850BC0 /* Main.storyboard */; };
 		A7970D7E1FCE557F00850BC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7970D7D1FCE557F00850BC0 /* Assets.xcassets */; };
 		A7970D811FCE557F00850BC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7970D7F1FCE557F00850BC0 /* LaunchScreen.storyboard */; };
-		A7970D891FCE55BB00850BC0 /* AnimationScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7970D881FCE55BB00850BC0 /* AnimationScene.swift */; };
+		A7970D891FCE55BB00850BC0 /* PCAnimationScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7970D881FCE55BB00850BC0 /* PCAnimationScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A7361A7C1FCF4459002D8426 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		A7361A7C1FCF4459002D8426 /* PCColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCColors.swift; sourceTree = "<group>"; };
 		A76C13FB2009B317001E5252 /* PCSpriteNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCSpriteNode.swift; sourceTree = "<group>"; };
+		A7707BC7200EECCE00A1D396 /* pixel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pixel.png; sourceTree = "<group>"; };
 		A7970D731FCE557F00850BC0 /* AnimationIsand.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AnimationIsand.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7970D761FCE557F00850BC0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A7970D781FCE557F00850BC0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		A7970D781FCE557F00850BC0 /* PCAnimationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCAnimationViewController.swift; sourceTree = "<group>"; };
 		A7970D7B1FCE557F00850BC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A7970D7D1FCE557F00850BC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7970D801FCE557F00850BC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A7970D821FCE557F00850BC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A7970D881FCE55BB00850BC0 /* AnimationScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationScene.swift; sourceTree = "<group>"; };
+		A7970D881FCE55BB00850BC0 /* PCAnimationScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCAnimationScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,11 +63,12 @@
 			isa = PBXGroup;
 			children = (
 				A7970D761FCE557F00850BC0 /* AppDelegate.swift */,
-				A7970D781FCE557F00850BC0 /* ViewController.swift */,
-				A7970D881FCE55BB00850BC0 /* AnimationScene.swift */,
-				A7361A7C1FCF4459002D8426 /* Colors.swift */,
+				A7970D781FCE557F00850BC0 /* PCAnimationViewController.swift */,
+				A7970D881FCE55BB00850BC0 /* PCAnimationScene.swift */,
+				A7361A7C1FCF4459002D8426 /* PCColors.swift */,
 				A76C13FB2009B317001E5252 /* PCSpriteNode.swift */,
 				A7970D7A1FCE557F00850BC0 /* Main.storyboard */,
+				A7707BC7200EECCE00A1D396 /* pixel.png */,
 				A7970D7D1FCE557F00850BC0 /* Assets.xcassets */,
 				A7970D7F1FCE557F00850BC0 /* LaunchScreen.storyboard */,
 				A7970D821FCE557F00850BC0 /* Info.plist */,
@@ -132,6 +135,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7707BC8200EECCE00A1D396 /* pixel.png in Resources */,
 				A7970D811FCE557F00850BC0 /* LaunchScreen.storyboard in Resources */,
 				A7970D7E1FCE557F00850BC0 /* Assets.xcassets in Resources */,
 				A7970D7C1FCE557F00850BC0 /* Main.storyboard in Resources */,
@@ -146,10 +150,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				A76C13FC2009B317001E5252 /* PCSpriteNode.swift in Sources */,
-				A7970D791FCE557F00850BC0 /* ViewController.swift in Sources */,
-				A7361A7D1FCF4459002D8426 /* Colors.swift in Sources */,
+				A7970D791FCE557F00850BC0 /* PCAnimationViewController.swift in Sources */,
+				A7361A7D1FCF4459002D8426 /* PCColors.swift in Sources */,
 				A7970D771FCE557F00850BC0 /* AppDelegate.swift in Sources */,
-				A7970D891FCE55BB00850BC0 /* AnimationScene.swift in Sources */,
+				A7970D891FCE55BB00850BC0 /* PCAnimationScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

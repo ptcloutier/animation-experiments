@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class Colors {
+class PCColors {
     
     struct Custom {
         
