@@ -30,6 +30,7 @@ class PCAnimationViewController: UIViewController {
         size = self.view.frame.size
         let skView = self.view as! SKView
         scene = PCAnimationScene(size: size)
+        scene.container = skView
         skView.presentScene(scene)
     }
 }

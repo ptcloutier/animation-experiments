@@ -12,12 +12,13 @@ import SpriteKit
 
 class PCAnimationScene: SKScene {
     
+    var top: CGPoint = CGPoint()
     var animationBackground: SKSpriteNode!
     var colors = [UIColor]()
-    var count: Int = 1
+    var count: Int = 0
     var nodes: [SKShapeNode] = []
-    let shapeNodeWidth: CGFloat = 5.0
-    let timeInterval: TimeInterval = 0
+    let shapeNodeWidth: CGFloat = 1.0
+    let timeInterval: TimeInterval = 1.0
     let maxCount = 100000
     var pool: [SKShapeNode] = []
     var shapeSize: CGSize = CGSize()
@@ -58,7 +59,7 @@ class PCAnimationScene: SKScene {
 
         self.scaleMode = .aspectFit
         self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
-  
+
     }
     
      
@@ -112,36 +113,35 @@ class PCAnimationScene: SKScene {
  
     func startAddSpriteTimer(){
         
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PCAnimationScene.addSprite), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(PCAnimationScene.addSprite), userInfo: nil, repeats: true)
     }
     
     
     
     @objc func addSprite(){
   
-        let top = topCenterStartingPoint()
-        createSprite(id: 0, sizeFactor: 0.33, position: top)
-
+        createSprite()
+        
     }
     
     
-    func createSprite(id: Int, sizeFactor: CGFloat, position: CGPoint) {
+    func createSprite(){
         
-        let texture = SKTexture.init(imageNamed: "pixel")
+        let shapeNode = SKShapeNode.init(circleOfRadius: 10.0)
+        shapeNode.blendMode = .add
+        shapeNode.fillColor = randomColor()
+        shapeNode.strokeColor = shapeNode.fillColor
+        shapeNode.glowWidth = 0.3
+        let texture = container?.texture(from: shapeNode) //(imageNamed: "pixel")
         let sprite = PCSpriteNode.init(texture: texture)
-        sprite.startContactTimer()
-        sprite.id = id
-        sprite.colorBlendFactor = 0.3
-        sprite.color = randomColor()
-        sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.size.width * sizeFactor)
+        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeNode.frame.size.width/3.0)
         sprite.physicsBody?.affectedByGravity = true
         sprite.physicsBody?.linearDamping = 10.0
         sprite.physicsBody?.angularDamping = 10.0
         sprite.physicsBody?.usesPreciseCollisionDetection = false
-        sprite.position = position
+        top = topCenterStartingPoint()
+        sprite.position = top
         self.addChild(sprite)
-   
-        
      }
 
     
@@ -151,7 +151,7 @@ class PCAnimationScene: SKScene {
             print("no location passed with notification")
             return
         }
-        replaceSprite(atLocation: location)
+//        replaceSprite(atLocation: location)
     }
     
     func replaceSprite(atLocation: CGPoint){

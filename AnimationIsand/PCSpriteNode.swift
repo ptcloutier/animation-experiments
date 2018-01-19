@@ -42,23 +42,23 @@ class PCSpriteNode: SKSpriteNode {
         return self.frame.origin
     }
     
-    func startContactTimer(){
-        
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PCSpriteNode.countContact), userInfo: nil, repeats: true)
-    }
-    
-    @objc func countContact(){
-        
-        guard let bodies = self.physicsBody?.allContactedBodies() else {
-            print("no physics bods")
-            return
-        }
-        let count = bodies.count
-        if  count > 3 {
-            let location = self.getLocation()
-            let nc = NotificationCenter.default
-            nc.post(name: Notification.Name(replaceWithLargerShapeNotification), object: location)
-            setBitmasksToZero(allContactedBodies: bodies)
-        }
-    }
+//    func startContactTimer(){
+//        
+//        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(PCSpriteNode.countContact), userInfo: nil, repeats: true)
+//    }
+//    
+//    @objc func countContact(){
+//        
+//        guard let bodies = self.physicsBody?.allContactedBodies() else {
+//            print("no physics bods")
+//            return
+//        }
+//        let count = bodies.count
+//        if  count > 3 {
+//            let location = self.getLocation()
+//            let nc = NotificationCenter.default
+//            nc.post(name: Notification.Name(replaceWithLargerShapeNotification), object: location)
+//            setBitmasksToZero(allContactedBodies: bodies)
+//        }
+//    }
 }
