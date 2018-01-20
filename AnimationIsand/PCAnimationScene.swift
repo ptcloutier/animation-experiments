@@ -18,17 +18,14 @@ class PCAnimationScene: SKScene {
     var count: Int = 0
     var nodes: [SKShapeNode] = []
     let shapeNodeWidth: CGFloat = 1.0
-    let timeInterval: TimeInterval = 1.0
+    let timeInterval: TimeInterval = 0.01
     let maxCount = 100000
     var pool: [SKShapeNode] = []
     var shapeSize: CGSize = CGSize()
     var atLocation: CGPoint = CGPoint()
     var splinePoints: [CGPoint] = []
-    var groundPoints: [CGPoint] = []
-    var nodeYLocations: [CGFloat] = []
-    var groundPointA: CGPoint = CGPoint()
-    var groundPointB: CGPoint = CGPoint()
-    var groundPointC: CGPoint = CGPoint()
+    var points: [CGPoint] = []
+    
     var container: SKView?
 
     var apexX: CGFloat = CGFloat()
@@ -36,7 +33,7 @@ class PCAnimationScene: SKScene {
     var poolCount: Int = 150
     var raiseApexY: CGFloat = CGFloat()
     var raiseYDrop: CGFloat = CGFloat()
-    var ground = SKShapeNode()
+    var hourglass = SKShapeNode()
     var timer: Timer = Timer()
     var sprites: [PCSpriteNode] = []
 
@@ -54,14 +51,43 @@ class PCAnimationScene: SKScene {
     override init(size: CGSize) {
         super.init(size: size)
 
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(PCAnimationScene.replaceSprite(notification:)), name: Notification.Name("replaceWithLargerShapeNotification"), object: nil )
+//        self.scaleMode = .aspectFit
+//        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
 
-        self.scaleMode = .aspectFit
-        self.physicsBody = SKPhysicsBody.init(edgeLoopFrom: self.frame)
-
+        
+        points = [CGPoint(x: 100.0, y: frame.maxY-100.0),
+                  CGPoint(x: 70.0, y: frame.maxY-170.0),
+                  CGPoint(x: frame.midX-100.0, y: frame.midY+100.0),
+                  CGPoint(x: frame.midX-100.0, y: frame.midY),
+                  CGPoint(x: frame.midX-100.0, y: frame.midY),
+                  CGPoint(x: 70.0, y: frame.minY+170.0),
+                  CGPoint(x: 100.0, y: frame.minY+100.0),
+                  CGPoint(x: frame.maxX-100.0, y: frame.minY+100.0),
+                  CGPoint(x: frame.maxX-70.0, y: frame.minY+170.0),
+                  CGPoint(x: frame.midX+100.0, y: frame.midY),
+                  CGPoint(x: frame.midX+100.0, y: frame.midY+100.0),
+                  CGPoint(x: frame.maxX-100.0, y: frame.maxY-170.0)
+//                  CGPoint(x: frame.maxX-70.0, y: frame.maxY-100.0),
+        ]
+        
+        
+        setupPoints(points: points)
     }
     
+    func setupPoints(points: [CGPoint]){
+        
+        splinePoints = points
+        hourglass.removeFromParent()
+        hourglass = SKShapeNode(splinePoints: &splinePoints,
+                             count: splinePoints.count)
+        hourglass.strokeColor = UIColor.clear
+        
+        hourglass.lineWidth = 1.0
+        hourglass.physicsBody = SKPhysicsBody(edgeChainFrom: hourglass.path!)
+        hourglass.physicsBody?.isDynamic = false
+        self.addChild(hourglass)
+        
+    }
      
     
     
@@ -131,48 +157,16 @@ class PCAnimationScene: SKScene {
         shapeNode.blendMode = .add
         shapeNode.fillColor = randomColor()
         shapeNode.strokeColor = shapeNode.fillColor
-        shapeNode.glowWidth = 0.3
+        shapeNode.glowWidth = 0.9
         let texture = container?.texture(from: shapeNode) //(imageNamed: "pixel")
         let sprite = PCSpriteNode.init(texture: texture)
-        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeNode.frame.size.width/3.0)
+        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeNode.frame.size.width/2.0)
         sprite.physicsBody?.affectedByGravity = true
-        sprite.physicsBody?.linearDamping = 10.0
+        sprite.physicsBody?.linearDamping = 05.0
         sprite.physicsBody?.angularDamping = 10.0
         sprite.physicsBody?.usesPreciseCollisionDetection = false
         top = topCenterStartingPoint()
         sprite.position = top
         self.addChild(sprite)
      }
-
-    
-    
-    @objc func replaceSprite(notification: Notification){
-        guard let location = notification.object as? CGPoint else {
-            print("no location passed with notification")
-            return
-        }
-//        replaceSprite(atLocation: location)
-    }
-    
-    func replaceSprite(atLocation: CGPoint){
-        createBigSprite(id: 0, sizeFactor: 10.0, position: atLocation)
-    }
-    
-    func createBigSprite(id: Int, sizeFactor: CGFloat, position: CGPoint) {
-        
-        let size = CGSize(width: 100.0, height: 100.0)
-         let sprite = SKSpriteNode(color: UIColor.purple, size: size)
-//        sprite.startContactTimer()
-        sprite.colorBlendFactor = 0.3
-//        sprite.color = randomColor()
-        sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.size.width * sizeFactor)
-        sprite.physicsBody?.affectedByGravity = true
-        sprite.physicsBody?.linearDamping = 10.0
-        sprite.physicsBody?.angularDamping = 10.0
-        sprite.physicsBody?.usesPreciseCollisionDetection = false
-        sprite.position = position
-        self.addChild(sprite)
-        
-        
-    }
 }
