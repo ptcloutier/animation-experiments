@@ -20,7 +20,6 @@ class PCAnimationViewController: UIViewController {
         super.viewDidLoad()
         
         configureScene()
-        scene.startAddSpriteTimer()
     }
     
     
