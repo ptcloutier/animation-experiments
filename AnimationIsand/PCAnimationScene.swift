@@ -16,9 +16,9 @@ class PCAnimationScene: SKScene {
     var topCenterPoint: CGPoint = CGPoint()
     var colors = [UIColor]()
     var count: Int = 0
-    let timeInterval: TimeInterval = 0.1
+    let timeInterval: TimeInterval = 0.5
     let maxCount: Int = 300
-    var shapeSize: CGFloat = 8.0
+    var shapeSize: CGFloat = 15.0
     var container: SKView?
     var hourglass = SKShapeNode()
     var timer: Timer = Timer()
@@ -38,25 +38,16 @@ class PCAnimationScene: SKScene {
         super.init(size: size)
 
 
-        let hourglassPoints = [CGPoint(x: 100.0, y: frame.maxY-100.0),
-                  CGPoint(x: 70.0, y: frame.maxY-170.0),
-                  CGPoint(x: frame.midX-15.0, y: frame.midY),
-                  CGPoint(x: 70.0, y: frame.minY+200.0),
-                  CGPoint(x: 100.0, y: frame.minY+100.0),
-                  CGPoint(x: frame.maxX-100.0, y: frame.minY+100.0),
-                  CGPoint(x: frame.maxX-70.0, y: frame.minY+200.0),
-                  CGPoint(x: frame.midX+15.0, y: frame.midY),
-                  CGPoint(x: frame.maxX-100.0, y: frame.maxY-200.0),
-                  CGPoint(x: frame.maxX-100.0, y: frame.maxY-100.0)
-        ]
+        let hourglassPoints = [
+            
+                  CGPoint(x: 100.0, y: 100.0),
+                  CGPoint(x: 170.0, y: 170.0),
+    ]
         
-        let doorPoints = [CGPoint(x: frame.midX-100.0, y: frame.midY),
-                          CGPoint(x: frame.midX+100.0, y: frame.midY),
-                          ]
-        door = connectShapePoints(points: doorPoints)
+        
+       
         hourglass = connectShapePoints(points: hourglassPoints)
         addChild(hourglass)
-        addChild(door)
      
         addSpritesTimer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(PCAnimationScene.addSprites), userInfo: nil, repeats:true)
      }
@@ -100,15 +91,19 @@ class PCAnimationScene: SKScene {
     
     func randomStartingPoint() -> CGPoint{
         
-        let randomStartingPoint = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*(CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
-        return randomStartingPoint
+        let point = CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: (-1)*(CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.height)))))
+        return point
     }
     
-    
+    func randomTopStartingPoint() -> CGPoint {
+        let point =  CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: -1)
+        
+        return point
+    }
     
     func topCenterStartingPoint() -> CGPoint {
-        let topCenterStartingPoint = CGPoint(x: (frame.midX+CGFloat(arc4random_uniform(2))), y: frame.maxY-1.0)
-        return topCenterStartingPoint
+        let point = CGPoint(x: (frame.midX+CGFloat(arc4random_uniform(2))), y: frame.maxY-1.0)
+        return point
     }
     
 
@@ -156,23 +151,27 @@ class PCAnimationScene: SKScene {
     
     
     func createSprite(){
-        let shapeNode = SKShapeNode.init(circleOfRadius: shapeSize)
+        let shapeNode = SKShapeNode.init(ellipseOf: CGSize(width: CGFloat(arc4random_uniform(UInt32(self.shapeSize*5.0))), height:CGFloat(arc4random_uniform(UInt32(self.shapeSize*5.0)))))
 //        shapeNode.blendMode = .add
         shapeNode.fillColor = randomColor()
         shapeNode.strokeColor = shapeNode.fillColor
-        shapeNode.glowWidth = 0.9
+//        shapeNode.glowWidth = 3.0
         let texture = container?.texture(from: shapeNode) //(imageNamed: "pixel")
         let sprite = PCSpriteNode.init(texture: texture)
 //        let sprite = PCSpriteNode(color: randomColor(), size: CGSize(width: shapeSize, height: shapeSize))
         sprite.blendMode = .add
-        sprite.physicsBody = SKPhysicsBody(circleOfRadius: sprite.frame.size.width/3.0)
+        sprite.physicsBody = SKPhysicsBody(circleOfRadius: shapeNode.frame.size.width/3.0)
         sprite.physicsBody?.affectedByGravity = true
-        sprite.physicsBody?.linearDamping = 5.0
-        sprite.physicsBody?.angularDamping = 10.0
+        sprite.physicsBody?.linearDamping = 10.0
+        sprite.physicsBody?.angularDamping = 0.0
         sprite.physicsBody?.usesPreciseCollisionDetection = false
-        sprite.physicsBody?.mass = 0.5
         topCenterPoint = topCenterStartingPoint()
         sprite.position = topCenterPoint
         self.addChild(sprite)
      }
+    
+    
+    func removeSprite(){
+        
+    }
 }
