@@ -13,7 +13,10 @@ class PCSpriteNode: SKSpriteNode {
 
     var id: Int = Int()
     let replaceWithLargerShapeNotification: String = "replaceWithLargerShapeNotification"
- 
+    var shouldFloat: Bool = false
+
+    
+    
 //    func startTimerToClearBitmasks(){
 //
 //         Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(PCSpriteNode.setBitmasksToZero), userInfo: nil, repeats: false)
