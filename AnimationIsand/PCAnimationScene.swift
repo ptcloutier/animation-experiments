@@ -24,8 +24,10 @@ class PCAnimationScene: SKScene {
     var top = SKShapeNode()
     var flip: Bool = false
     let spriteName = "sprite"
-    
-    
+    var max = 100
+    var lineWidths: [CGFloat] = []
+    var pointsCollection: [[CGPoint]] = []
+    var shapeChoice: Bool = false
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -37,49 +39,23 @@ class PCAnimationScene: SKScene {
         super.init(size: size)
         
         
-        let pointsA = [
-            CGPoint(x: frame.minX+80, y: frame.maxY-80.0),
-            CGPoint(x: frame.midX-20.0, y: frame.maxY-160.0)
-        ]
-        let pointsB = [
-            CGPoint(x: frame.minX+120.0, y: frame.midY+140.0),
-            CGPoint(x: frame.midX+20.0, y: frame.midY+90.0)
-        ]
         
-        let pointsC = [
-            CGPoint(x: frame.midX+80.0, y: frame.maxY-250.0),
-            CGPoint(x: frame.midX-20.0, y: frame.midY)
-        ]
         
-        let pointsD = [
-            CGPoint(x: frame.minX+100.0, y: frame.midY-40.0),
-            CGPoint(x: frame.midX+30.0, y: frame.midY-100.0)
-        ]
-        
-        let pointsE = [
-            CGPoint(x: frame.maxX-100.0, y: frame.midY-150.0),
-            CGPoint(x: frame.midX-50.0, y: frame.minY+130.0)
-        ]
+    }
+    
+    
+    func createAddSpritesTimer(){
+        addSpritesTimer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(PCAnimationScene.addSprites), userInfo: nil, repeats: true)
+    }
 
-        let pointsF = [
-            CGPoint(x: frame.midX-100.0, y: frame.midY-250.0),
-            CGPoint(x: frame.midX+80.0, y: frame.minY+30.0)
-        ]
-        
-       
-        
-        let shelfCollection: [[CGPoint]] = [
-            pointsA, pointsB, pointsC, pointsD, pointsE, pointsF
-        ]
-        
-        for x in shelfCollection {
+    
+    
+    func addShelvesToScene(){
+        for x in pointsCollection {
             let shelves = connectShapePoints(points: x)
             addChild(shelves)
         }
-        
-        addSpritesTimer = Timer.scheduledTimer(timeInterval: timeInterval, target: self, selector: #selector(PCAnimationScene.addSprites), userInfo: nil, repeats: true)
-     }
-    
+    }
     
     
     func connectShapePoints(points: [CGPoint]) -> SKShapeNode{
@@ -88,7 +64,7 @@ class PCAnimationScene: SKScene {
         let shape = SKShapeNode(splinePoints: &splinePoints,
                              count: splinePoints.count)
         shape.strokeColor = randomColor()
-        shape.lineWidth = 10.0
+        shape.lineWidth = lineWidths[Int(arc4random_uniform(UInt32(lineWidths.count-1)))]
         shape.physicsBody = SKPhysicsBody(edgeChainFrom: shape.path!)
         shape.physicsBody?.isDynamic = false
         return shape
@@ -96,36 +72,31 @@ class PCAnimationScene: SKScene {
     
     
     
-    override func update(_ currentTime: CFTimeInterval) {
-        for child in children {
-            
-            if child.name == spriteName {
-                let node = child as! PCSpriteNode
-                let location = node.getLocation()
-                let y = location.y
-                if node.shouldFloat == true && y > frame.maxY {
-                    removeFromParent()
-                    break
-                }
-                if node.position.y < 0 {
-                    node.shouldFloat = true
-                }
-                let randomCo = randomColor()
-                let randomInterval = TimeInterval(arc4random_uniform((UInt32(1.5))))
-                
-                if node.shouldFloat == true {
-                    let action = SKAction.colorize(with: randomCo, colorBlendFactor: CGFloat(arc4random_uniform((UInt32(1.0)))), duration: randomInterval)
-                    node.run(action)
-                    floatShape(node: node)
-
-                }
-                
-                
-            }
-        }
-    }
-    
-    
+//    override func update(_ currentTime: CFTimeInterval) {
+//
+//        for child in children {
+//            if child.name == spriteName {
+//                let node = child as! PCSpriteNode
+//                let location = node.getLocation()
+//                let y = location.y
+//                if node.shouldFloat == true && y > frame.maxY {
+//                    print("children count \(children.count)")
+//                    node.removeFromParent()
+//                    break
+//                }
+//                if node.position.y < 0 {
+//                    node.shouldFloat = true
+//                }
+//                let randomCo = randomColor()
+//                let randomInterval = TimeInterval(arc4random_uniform((UInt32(1.5))))
+//                if node.shouldFloat == true {
+//                    let action = SKAction.colorize(with: randomCo, colorBlendFactor: CGFloat(arc4random_uniform((UInt32(1.0)))), duration: randomInterval)
+//                    node.run(action)
+//                    floatShape(node: node)
+//                }
+//            }
+//        }
+//    }
     
     
     
@@ -170,15 +141,18 @@ class PCAnimationScene: SKScene {
         return point
     }
     
+    
+    
     func randomTopStartingPoint() -> CGPoint {
         let point =  CGPoint(x: CGFloat(arc4random_uniform(UInt32(UIScreen.main.bounds.size.width))), y: frame.height)
         return point
     }
     
+    
+    
+    
     func alternatingTopStartingPoints() -> CGPoint {
-        
         var point: CGPoint
-       
         switch flip {
         case true:
             point = CGPoint(x: frame.minX+60.0, y: frame.maxY)
@@ -189,6 +163,9 @@ class PCAnimationScene: SKScene {
         }
         return point
     }
+    
+    
+    
     
     func topCenterStartingPoint() -> CGPoint {
         let point = CGPoint(x: (frame.midX+CGFloat(arc4random_uniform(2))), y: frame.maxY-1.0)
@@ -211,15 +188,27 @@ class PCAnimationScene: SKScene {
     
     @objc func addSprites(){
             createSprite()
-            count += 1
-            print("\(count)")
+        count += 1
+        print("\(count)")
     }
     
     
     
     
     func createSprite(){
-        let shapeNode = SKShapeNode.init(ellipseOf: CGSize(width: CGFloat(arc4random_uniform(UInt32(self.shapeSize*3.0))), height:CGFloat(arc4random_uniform(UInt32(self.shapeSize*3.0)))))
+        
+        var shapeNode: SKShapeNode
+       
+        switch shapeChoice {
+        case true:
+            shapeNode = SKShapeNode.init(ellipseOf: CGSize(width:CGFloat(arc4random_uniform(UInt32(self.shapeSize*3.0))), height:CGFloat(arc4random_uniform(UInt32(self.shapeSize*3.0)))))
+            shapeChoice = false
+        case false:
+            shapeNode = SKShapeNode.init(rectOf: CGSize(width: CGFloat(arc4random_uniform(UInt32(self.shapeSize*3.0))), height: CGFloat(arc4random_uniform(UInt32(self.shapeSize*3.0)))))
+            shapeChoice = true
+        }
+        
+        
         shapeNode.fillColor = randomColor()
         shapeNode.strokeColor = shapeNode.fillColor
         let texture = container?.texture(from: shapeNode) //(imageNamed: "pixel")
@@ -231,9 +220,7 @@ class PCAnimationScene: SKScene {
         sprite.physicsBody?.linearDamping = 10.0
         sprite.physicsBody?.angularDamping = 3.0
         sprite.physicsBody?.usesPreciseCollisionDetection = false
-        sprite.position = CGPoint(x: frame.minX+100.0, y: frame.maxY)
+        sprite.position = CGPoint(x: frame.midX+60.0, y: frame.maxY)
         self.addChild(sprite)
      }
-    
-    
 }
