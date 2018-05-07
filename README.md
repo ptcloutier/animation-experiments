@@ -1,4 +1,4 @@
-# blowing-bubbles
+# animations
 
 A little fun with Sprites and some additive color blending.
 
